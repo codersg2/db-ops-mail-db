@@ -13,7 +13,9 @@ CREATE TABLE [dbo].[Attachment]
 [ProcessingModel] [varchar] (100) COLLATE Latin1_General_CI_AI NULL,
 [ExtractionFailed] [bit] NULL CONSTRAINT [DF__Attachmen__Extra__60A75C0F] DEFAULT ((0)),
 [CreatedAt] [datetime] NULL CONSTRAINT [DF__Attachmen__Creat__619B8048] DEFAULT (getutcdate()),
-[KeywordsProcessed] [bit] NOT NULL CONSTRAINT [DF__Attachmen__Keywo__4B422AD5] DEFAULT ((0))
+[KeywordsProcessed] [bit] NOT NULL CONSTRAINT [DF__Attachmen__Keywo__4B422AD5] DEFAULT ((0)),
+[StructuredDataProcessed] [bit] NOT NULL CONSTRAINT [DF_Attachment_StructuredDataProcessed] DEFAULT ((0)),
+[MarkForReclassification] [bit] NOT NULL CONSTRAINT [DF_Attachment_MarkForReclassification] DEFAULT ((0))
 )
 GO
 ALTER TABLE [dbo].[Attachment] ADD CONSTRAINT [PK__Attachme__3214EC076AA331DB] PRIMARY KEY CLUSTERED ([Id])
