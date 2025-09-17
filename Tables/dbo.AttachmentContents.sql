@@ -6,7 +6,8 @@ CREATE TABLE [dbo].[AttachmentContents]
 [SummaryText] [nvarchar] (max) COLLATE Latin1_General_CI_AI NOT NULL,
 [StructuredJson] [nvarchar] (max) COLLATE Latin1_General_CI_AI NULL,
 [CreatedAt] [datetime] NULL CONSTRAINT [DF__Attachmen__Creat__6EF57B66] DEFAULT (getutcdate()),
-[CleanedTextLength] AS (len(replace(replace(replace([RawExtractedText],' ',''),char((9)),''),char((10)),''))) PERSISTED
+[CleanedTextLength] AS (len(replace(replace(replace([RawExtractedText],' ',''),char((9)),''),char((10)),''))) PERSISTED,
+[SuspiciousRepetition] [bit] NOT NULL CONSTRAINT [DF_AttachmentContents_SuspiciousRepetition] DEFAULT ((0))
 )
 GO
 ALTER TABLE [dbo].[AttachmentContents] ADD CONSTRAINT [PK__Attachme__3214EC071C2D3379] PRIMARY KEY CLUSTERED ([Id])

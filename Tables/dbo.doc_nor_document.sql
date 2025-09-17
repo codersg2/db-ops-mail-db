@@ -8,9 +8,6 @@ CREATE TABLE [dbo].[doc_nor_document]
 [cp_date] [date] NULL,
 [document_type] [varchar] (32) COLLATE Latin1_General_CI_AI NOT NULL,
 [area_variant] [varchar] (64) COLLATE Latin1_General_CI_AI NULL,
-[parcel_id] [nvarchar] (50) COLLATE Latin1_General_CI_AI NULL,
-[sequence_index] [int] NULL,
-[parent_nor_doc_id] [uniqueidentifier] NULL,
 [tender_local_time] [datetime2] (0) NULL,
 [tender_timezone] [nvarchar] (64) COLLATE Latin1_General_CI_AI NULL,
 [tender_utc_time] [datetime2] (0) NULL,
@@ -46,9 +43,6 @@ CREATE TABLE [dbo].[doc_nor_document]
 [is_multi_berth_hoses_off] [bit] NOT NULL CONSTRAINT [DF__doc_nor_d__is_mu__056ECC6A] DEFAULT ((0)),
 [is_pilot_on_board] [bit] NOT NULL CONSTRAINT [DF__doc_nor_d__is_pi__0662F0A3] DEFAULT ((0)),
 [is_all_fast_trigger] [bit] NOT NULL CONSTRAINT [DF__doc_nor_d__is_al__075714DC] DEFAULT ((0)),
-[related_email_message_id] [nvarchar] (255) COLLATE Latin1_General_CI_AI NULL,
-[related_email_date_utc] [datetime2] (0) NULL,
-[related_sof_ref] [nvarchar] (100) COLLATE Latin1_General_CI_AI NULL,
 [cargo_product] [nvarchar] (100) COLLATE Latin1_General_CI_AI NULL,
 [filename] [nvarchar] (260) COLLATE Latin1_General_CI_AI NULL,
 [sha256] [varbinary] (32) NULL,
@@ -70,18 +64,17 @@ GO
 SET ANSI_NULLS ON
 GO
 
-/* Keep updated_utc fresh on change */
-CREATE TRIGGER [dbo].[trg_doc_nor_document_set_updated]
-ON [dbo].[doc_nor_document]
-AFTER UPDATE
-AS
-BEGIN
-  SET NOCOUNT ON;
-  UPDATE d
-    SET updated_utc = SYSUTCDATETIME()
-  FROM dbo.doc_nor_document d
-  JOIN inserted i ON d.doc_id = i.doc_id;
-END;
+  CREATE TRIGGER [dbo].[trg_doc_nor_document_set_updated]
+  ON [dbo].[doc_nor_document]
+  AFTER UPDATE
+  AS
+  BEGIN
+    SET NOCOUNT ON;
+    UPDATE d
+      SET updated_utc = SYSUTCDATETIME()
+    FROM dbo.doc_nor_document d
+    JOIN inserted i ON d.AttachmentID = i.AttachmentID;
+  END;
 GO
 ALTER TABLE [dbo].[doc_nor_document] ADD CONSTRAINT [PK__doc_nor___8AD029243F668A97] PRIMARY KEY CLUSTERED ([AttachmentID])
 GO
@@ -89,13 +82,7 @@ CREATE NONCLUSTERED INDEX [IX_doc_nor_document_acceptance] ON [dbo].[doc_nor_doc
 GO
 CREATE NONCLUSTERED INDEX [IX_doc_nor_document_classification] ON [dbo].[doc_nor_document] ([document_type], [area_variant], [is_daily_0900], [is_all_fast_trigger])
 GO
-CREATE NONCLUSTERED INDEX [IX_doc_nor_document_parent] ON [dbo].[doc_nor_document] ([parent_nor_doc_id])
-GO
-CREATE NONCLUSTERED INDEX [IX_doc_nor_document_email] ON [dbo].[doc_nor_document] ([related_email_message_id])
-GO
 CREATE NONCLUSTERED INDEX [IX_doc_nor_document_imo_time] ON [dbo].[doc_nor_document] ([vessel_imo], [tender_utc_time])
 GO
 CREATE NONCLUSTERED INDEX [IX_doc_nor_document_vessel_port_time] ON [dbo].[doc_nor_document] ([vessel_name], [port], [tender_utc_time]) INCLUDE ([document_type], [area_variant], [is_daily_0900])
-GO
-ALTER TABLE [dbo].[doc_nor_document] ADD CONSTRAINT [FK__doc_nor_d__paren__7EC1CEDB] FOREIGN KEY ([parent_nor_doc_id]) REFERENCES [dbo].[doc_nor_document] ([AttachmentID])
 GO
