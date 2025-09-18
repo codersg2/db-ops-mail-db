@@ -24,6 +24,8 @@ CREATE NONCLUSTERED INDEX [IX_Attachment_DocumentType] ON [dbo].[Attachment] ([D
 GO
 CREATE NONCLUSTERED INDEX [IX_Attachment_EmailId] ON [dbo].[Attachment] ([EmailId])
 GO
+CREATE NONCLUSTERED INDEX [IX_Attachment_EmailId_DocTypes] ON [dbo].[Attachment] ([EmailId], [ValidatedDocumentType], [DocumentType]) INCLUDE ([Id], [Filename], [FileSize], [ContentType], [Confidence], [DocumentTypeConfidence], [ProcessedAt], [ProcessingModel], [ExtractionFailed], [CreatedAt])
+GO
 CREATE NONCLUSTERED INDEX [IX_Attachment_Unprocessed] ON [dbo].[Attachment] ([Id]) WHERE ([ValidatedDocumentType] IS NULL AND [ExtractionFailed]=(0))
 GO
 CREATE NONCLUSTERED INDEX [IX_Attachment_KeywordsProcessed] ON [dbo].[Attachment] ([KeywordsProcessed]) INCLUDE ([Id]) WHERE ([KeywordsProcessed]=(0) AND [ExtractionFailed]=(0))

@@ -57,6 +57,8 @@ CREATE NONCLUSTERED INDEX [IX_Email_ThreadId] ON [dbo].[Email] ([ThreadId])
 GO
 CREATE NONCLUSTERED INDEX [IX_Email_VesselImo] ON [dbo].[Email] ([VesselImo])
 GO
+CREATE NONCLUSTERED INDEX [IX_Email_VesselImo_VoyageNo] ON [dbo].[Email] ([VesselImo], [VoyageNo]) INCLUDE ([Id], [VesselName], [SentDate], [ReceivedDate], [Category], [SubCategory], [CreatedAt]) WHERE ([VesselImo] IS NOT NULL AND [VoyageNo] IS NOT NULL)
+GO
 CREATE NONCLUSTERED INDEX [IX_Email_VesselVoyage] ON [dbo].[Email] ([VesselName], [VoyageNo]) WHERE ([VesselName] IS NOT NULL AND [VoyageNo] IS NOT NULL)
 GO
 CREATE NONCLUSTERED INDEX [IX_Email_VesselVoyage_Category] ON [dbo].[Email] ([VesselName], [VoyageNo], [Category], [SubCategory]) INCLUDE ([Id], [SentDate])
